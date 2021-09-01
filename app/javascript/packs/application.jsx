@@ -6,8 +6,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'stylesheets/base.css';
 
-import App from './components/App';
+import Board from './components/Board';
 
 document.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(<App />, document.body.appendChild(document.createElement('div')));
+  ReactDOM.render(<Board />, document.body.appendChild(document.createElement('div')));
 });

@@ -89,6 +89,11 @@ https://api.trello.com/1/tokens/{YOUR_TRELLO_API_TOKEN}/webhooks/ \
 }'
 ```
 
+Start the React dev Server:
+```
+bin/webpack-dev-server
+```
+
 Your server will be available at [localhost:3000](http://localhost:3000). Changes made to the code should reload automatically.
 
 **Important note:** if for any reason you have to restart ngrok, the webhooks URL will therefore change, so you'll need to register the webhooks again.
