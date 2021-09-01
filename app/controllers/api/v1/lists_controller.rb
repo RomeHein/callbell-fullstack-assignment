@@ -6,32 +6,35 @@ class Api::V1::ListsController < ApplicationController
   end
 
   def create
-    list = List.new(list_params)
-    if card.save
-      render json: list, status: 200
-    else 
-      render json: {error: 'Could not save List'}
-    end
+    newList = self.makeRequest("list", "POST", list_params)
+    puts "New list created: #{newList}"
+    render status: 200
   end
 
   def update
+    if params[:id]
+      if params[:name]
+        updatedList = self.makeRequest("list", "PUT", list_params)
+      elsif params[:closed]
+        updatedList = self.makeRequest("list/#{params[:id]}/closed", "PUT", {:value => params[:closed]})
+      end
+      puts "List updated: #{updatedList}"
+      render status: 200
+    end
   end
 
   def destroy
-    list = List.find(params[:id])
-    if list.destroy
-      render json: list, status: 200
-    else
-      render json: {error: 'Could not delete List'}
-    end
+    deletedList = self.makeRequest("list", "DELETE", list_params)
+    puts "List deleted: #{deletedList}"
+    render status: 200
   end
 
   private 
     def list_params
       params.require(:list).permit([
-        :name,
-        :id
+        :id,
+        :closed,
+        :name
       ])
-    end
-  
+    end  
 end

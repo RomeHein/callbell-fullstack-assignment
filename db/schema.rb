@@ -13,6 +13,7 @@
 ActiveRecord::Schema.define(version: 2021_03_25_150826) do
 
   create_table "cards", id: :string, force: :cascade do |t|
+    t.string "idList"
     t.string "name"
     t.float "pos"
     t.text "desc"
@@ -24,6 +25,7 @@ ActiveRecord::Schema.define(version: 2021_03_25_150826) do
 
   create_table "lists", id: :string, force: :cascade do |t|
     t.string "name"
+    t.boolean "closed", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

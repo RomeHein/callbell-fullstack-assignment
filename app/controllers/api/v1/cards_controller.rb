@@ -6,27 +6,21 @@ class Api::V1::CardsController < ApplicationController
   end
 
   def create
-    # TODO:
-    #  - add body params validation
-    #  - push card to Trello
-    card = Card.new(card_params)
-    if card.save
-      render json: card, status: 200
-    else 
-      render json: {error: 'Could not save Card'}
-    end
+    newCard = self.makeRequest("card", "POST", card_params)
+    puts "New card created: #{newCard}"
+    render status: 200
   end
 
   def update
+    updatedCard = self.makeRequest("card", "UPDATE", card_params)
+    puts "New card updated: #{updatedCard}"
+    render status: 200
   end
 
   def destroy
-    card = Card.find(params[:id])
-    if card.destroy
-      render json: card, status: 200
-    else
-      render json: {error: 'Could not delete Card'}
-    end
+    deletedList = self.makeRequest("card", "DELETE", card_params)
+    puts "Card deleted: #{deletedCard}"
+    render status: 200
   end
 
   private 
@@ -34,7 +28,9 @@ class Api::V1::CardsController < ApplicationController
       params.require(:card).permit([
         :name,
         :id,
+        :idList,
         :pos,
+        :closed,
         :desc
       ])
     end
