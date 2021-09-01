@@ -1,8 +1,10 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      resource :webhooks
+      get '/webhooks' => 'webhooks#subscribe'
+      post '/webhooks' => 'webhooks#event'
       resources :cards
+      resources :lists
     end
   end
 
