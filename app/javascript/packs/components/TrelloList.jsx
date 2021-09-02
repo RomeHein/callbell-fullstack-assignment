@@ -1,22 +1,23 @@
 import React from "react";
+import "../../stylesheets/list.css"
 import { List, Card } from 'antd';
+import NewItemHeader from './NewItemHeader'
 class TrelloList extends React.Component {
-    state = {
-        cards: [],
-    };
     render() {
         return (
             <List
-                itemLayout="horizontal"
-                dataSource={this.state.cards}
+                className="list__container"
+                bordered="true"
+                itemLayout="vertical"
+                dataSource={this.props.cards}
                 renderItem={item => (
                     <List.Item>
-                        <List.Item.Meta
-                            title={item.name}
-                            description={item.desc}
-                        />
+                        <Card title={item.name}>
+                        {item.desc}
+                        </Card>
                     </List.Item>
                 )}
+                header={<NewItemHeader list="true" title={this.props.name} />}
             />
         )
     }
