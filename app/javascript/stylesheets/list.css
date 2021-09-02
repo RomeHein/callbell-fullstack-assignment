@@ -1,4 +1,4 @@
 .list__container {
-    margin: 5px;
-    /* max-width: 200px; */
+    margin: 5px !important;
+    min-width: 300px;
 }

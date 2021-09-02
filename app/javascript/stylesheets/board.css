@@ -1,0 +1,6 @@
+.board__container {
+    display: flex;
+    flex-direction: horizontal;
+    overflow: scroll;
+    margin: 5px;
+}
