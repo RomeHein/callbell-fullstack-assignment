@@ -8,19 +8,19 @@ class Api::V1::CardsController < ApplicationController
   def create
     newCard = self.makeRequest("card", "POST", card_params)
     puts "New card created: #{newCard}"
-    render status: 200
+    render json: newCard, status: 200
   end
 
   def update
     updatedCard = self.makeRequest("card", "UPDATE", card_params)
     puts "New card updated: #{updatedCard}"
-    render status: 200
+    render json: updatedCard, status: 200
   end
 
   def destroy
     deletedList = self.makeRequest("card", "DELETE", card_params)
     puts "Card deleted: #{deletedCard}"
-    render status: 200
+    render json: deletedCard, status: 200
   end
 
   private 

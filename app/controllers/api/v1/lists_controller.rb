@@ -6,27 +6,29 @@ class Api::V1::ListsController < ApplicationController
   end
 
   def create
-    newList = self.makeRequest("list", "POST", list_params)
+    puts "New list params: #{params}"
+    newList = self.makeRequest("lists", "POST", list_params)
     puts "New list created: #{newList}"
-    render status: 200
+    render json: newList, status: 200
   end
 
   def update
     if params[:id]
       if params[:name]
-        updatedList = self.makeRequest("list", "PUT", list_params)
+        puts "Filtered List param: #{params}"
+        updatedList = self.makeRequest("lists/#{params[:id]}", "PUT", update_list_params)
       elsif params[:closed]
-        updatedList = self.makeRequest("list/#{params[:id]}/closed", "PUT", {:value => params[:closed]})
+        updatedList = self.makeRequest("lists/#{params[:id]}/closed", "PUT", {:value => params[:closed]})
       end
       puts "List updated: #{updatedList}"
-      render status: 200
+      render json: updatedList, status: 200
     end
   end
 
   def destroy
     deletedList = self.makeRequest("list", "DELETE", list_params)
     puts "List deleted: #{deletedList}"
-    render status: 200
+    render json: deletedList, status: 200
   end
 
   private 
@@ -36,5 +38,9 @@ class Api::V1::ListsController < ApplicationController
         :closed,
         :name
       ])
+    end  
+    def update_list_params
+      params.require(:id)
+      return {:name => params[:name]}
     end  
 end
