@@ -1000,6 +1000,11 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@rails/actioncable@^6.1.4-1":
+  version "6.1.4-1"
+  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-6.1.4-1.tgz#69982e7f352d732f71fda0cc01b7ba8269c9945b"
+  integrity sha512-b6sLoMop3gX22Wm2P5LPpKcZGwsf1ZoAGS+g1HrTrdlsZ/ENOKIBiSNnHOJajHwcYlF0TefBs7e7jIYZHVYihQ==
+
 "@rails/webpacker@5.2.1":
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/@rails/webpacker/-/webpacker-5.2.1.tgz"
