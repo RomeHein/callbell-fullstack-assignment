@@ -18,7 +18,6 @@ ActiveRecord::Schema.define(version: 2021_03_25_150826) do
     t.float "pos"
     t.text "desc"
     t.boolean "closed", default: false
-    t.boolean "archived", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end

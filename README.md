@@ -89,6 +89,8 @@ https://api.trello.com/1/tokens/{YOUR_TRELLO_API_TOKEN}/webhooks/ \
 }'
 ```
 
+Add the generated NGROK ip (forme: aaaa-bb-ccc-ddd-eee) address into your env file
+
 Start the React dev Server:
 ```
 bin/webpack-dev-server
