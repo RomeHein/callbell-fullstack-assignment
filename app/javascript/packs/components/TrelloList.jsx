@@ -11,7 +11,7 @@ class TrelloList extends React.Component {
                 bordered={true}
                 itemLayout="vertical"
                 dataSource={this.props.cards}
-                renderItem={item => (
+                renderItem={item => (this.props.name?
                     <List.Item>
                         <Card key={item.id}>
                             <Card.Meta
@@ -28,7 +28,7 @@ class TrelloList extends React.Component {
                                 }
                             />
                         </Card>
-                    </List.Item>
+                    </List.Item>:null
                 )}
                 header={<NewItemHeader
                     title={this.props.name}

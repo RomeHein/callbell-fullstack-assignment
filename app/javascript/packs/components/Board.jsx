@@ -87,7 +87,9 @@ class Board extends React.Component {
     await this.loadData(type);
   };
   openedList() {
-    return this.state.lists.filter(list => !list.closed)
+    let openedList = this.state.lists.filter(list => !list.closed)
+    openedList.push({})
+    return openedList
   }
   cardsForList(id) {
     let filtered = this.state.cards.filter(card => card && card.idList === id)
@@ -118,7 +120,7 @@ class Board extends React.Component {
                   onCloseCard={(id) => {this.closeItem("cards",id)}}/>
               })
             }
-            <TrelloList onChangeTitle={(name) => { this.editItem("lists", {name}) }} />
+            {/* <TrelloList onChangeTitle={(name) => { this.editItem("lists", {name}) }} /> */}
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>Trello Clone for CallBell ©2021.</Footer>

@@ -24,7 +24,7 @@ class Api::V1::CardsController < ApplicationController
   end
 
   def destroy
-    deletedList = self.makeRequest("cards/#{params[:id]}", "DELETE", {})
+    deletedCard = self.makeRequest("cards/#{params[:id]}", "DELETE", {})
     puts "Card deleted: #{deletedCard}"
     render json: deletedCard, status: 200
   end
@@ -42,7 +42,14 @@ class Api::V1::CardsController < ApplicationController
     end
     def update_card_params
       params.require(:id)
-      return {:idList => params[:idList], :name => params[:name], :desc => params[:desc]}
+      newParams = {:idList => params[:idList]}
+      if params[:name]
+        newParams[:name] = params[:name]
+      end
+      if params[:desc]
+        newParams[:desc] = params[:desc]
+      end
+      return newParams
     end
   
 end
