@@ -8,19 +8,16 @@ class Board extends React.Component {
     lists: [],
     cards: []
   };
-  componentDidMount() {
-    ['lists', 'cards'].forEach(type => {
-      this.loadData(type);
-    })
-  }
-  editItem = async (type, id, name) => {
+  editItem = async (type, {id, idList, name, desc}) => {
     let url = `api/v1/${type}`;
     if (id) {
-      url+='/'+id
+      url += '/' + id
     }
     try {
       const body = JSON.stringify({
-        name
+        name,
+        desc,
+        idList
       })
       const data = await fetch(url, {
         method: id ? 'PUT' : 'POST',
@@ -32,7 +29,7 @@ class Board extends React.Component {
       })
       if (data.ok) {
         const json = await data.json()
-        if (id) {
+        if (json && id) {
           const newItems = this.state[type].map(item => {
             if (item.id === id) {
               return json
@@ -52,8 +49,24 @@ class Board extends React.Component {
       throw new Error(`Network error: ${e}`);
     }
   }
-  closeList = async (id) => {
-    console.log(`Close list: ${id}`)
+  closeItem = async (type, id) => {
+    const url = `api/v1/${type}/${id}`;
+    try {
+      const data = await fetch(url, {
+        method: "delete",
+      })
+      if (data.ok) {
+        const json = data.json();
+        if (json) {
+          const newItems = this.state[type].filter(item => item.id !== id)
+          this.setState(() => ({
+            [type]: newItems,
+          }));
+        }
+      }
+    } catch (e) {
+      throw new Error("Network error.");
+    }
   }
   loadData = async (type) => {
     const url = `api/v1/${type}`;
@@ -69,20 +82,6 @@ class Board extends React.Component {
       throw new Error(`Network error: ${e}`);
     }
   };
-  deleteData = async (type, id) => {
-    const url = `api/v1/${type}/${id}`;
-    try {
-      const data = await fetch(url, {
-        method: "delete",
-      })
-      if (data.ok) {
-        this.reloadData(type);
-        return data.json();
-      }
-    } catch (e) {
-      throw new Error("Network error.");
-    }
-  };
   reloadData = async (type) => {
     this.setState({ [type]: [] });
     await this.loadData(type);
@@ -91,9 +90,14 @@ class Board extends React.Component {
     return this.state.lists.filter(list => !list.closed)
   }
   cardsForList(id) {
-    let filtered = this.state.cards.filter(card => card.idList === id)
+    let filtered = this.state.cards.filter(card => card && card.idList === id)
     filtered.push({})
     return filtered
+  }
+  componentDidMount() {
+    ['lists', 'cards'].forEach(type => {
+      this.loadData(type);
+    })
   }
   render() {
     return (
@@ -101,12 +105,20 @@ class Board extends React.Component {
         <Content>
           <h1 style={{ padding: "20px" }}>Board</h1>
           <div className="board__container">
-              {
-                this.openedList().map(list => {
-                  return <TrelloList key={list.id} name={list.name} cards={this.cardsForList(list.id)} onChangeTitle={(e) => { this.editItem("lists", list.id, e) }} onCloseList={this.closeList(list.id)} />
-                })
-              }
-              <TrelloList onChangeTitle={(e) => { this.editItem("lists", null, e) }} />
+            {
+              this.openedList().map(list => {
+                return <TrelloList
+                  key={list.id}
+                  name={list.name}
+                  cards={this.cardsForList(list.id)}
+                  onChangeTitle={(name) => { this.editItem("lists", {id: list.id, name}) }}
+                  onCloseList={() => {this.closeItem("lists",list.id)}} 
+                  onChangeCardTitle={(id,name) => {this.editItem("cards", {id, name, idList: list.id})}}
+                  onChangeCardDesc={(id,desc) => {this.editItem("cards", {id, desc, idList: list.id})}}
+                  onCloseCard={(id) => {this.closeItem("cards",id)}}/>
+              })
+            }
+            <TrelloList onChangeTitle={(name) => { this.editItem("lists", {name}) }} />
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>Trello Clone for CallBell ©2021.</Footer>

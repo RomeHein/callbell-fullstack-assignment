@@ -12,13 +12,19 @@ class Api::V1::CardsController < ApplicationController
   end
 
   def update
-    updatedCard = self.makeRequest("card", "UPDATE", card_params)
-    puts "New card updated: #{updatedCard}"
-    render json: updatedCard, status: 200
+    if params[:id]
+      if params[:name] || params[:desc]
+        updatedCard = self.makeRequest("cards/#{params[:id]}", "PUT", update_card_params)
+      elsif params[:closed]
+        updatedCard = self.makeRequest("cards/#{params[:id]}/closed", "PUT", {:value => params[:closed]})
+      end
+      puts "Card updated: #{updatedCard}"
+      render json: updatedCard, status: 200
+    end
   end
 
   def destroy
-    deletedList = self.makeRequest("card", "DELETE", card_params)
+    deletedList = self.makeRequest("cards/#{params[:id]}", "DELETE", {})
     puts "Card deleted: #{deletedCard}"
     render json: deletedCard, status: 200
   end
@@ -33,6 +39,10 @@ class Api::V1::CardsController < ApplicationController
         :closed,
         :desc
       ])
+    end
+    def update_card_params
+      params.require(:id)
+      return {:idList => params[:idList], :name => params[:name], :desc => params[:desc]}
     end
   
 end

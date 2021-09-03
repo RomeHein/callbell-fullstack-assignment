@@ -52,8 +52,10 @@ class Api::V1::WebhooksController < ApplicationController
           card.closed = true
         elsif _json.action.display.translationKey == "action_unarchived_card"
           card.closed = false
-        elsif _json.action.display.translationKey == "action_rename_card"
+        elsif _json.action.display.translationKey == "action_renamed_card"
           card.name = _json.action.data.card.name
+        elsif _json.action.display.translationKey == "action_changed_description_of_card"
+          card.desc = _json.action.data.card.desc
         end
         card.save
       end
