@@ -20,7 +20,7 @@ class Api::V1::WebhooksController < ApplicationController
           name: _json.action.data.list.name
         )
         list.save
-        ActionCable.server.broadcast("update", {action: "update",type: "lists",list: list })
+        ActionCable.server.broadcast("update", {action: "create",type: "lists",lists: list })
       end
     when "updateList"
       if List.exists?(_json.action.data.list.id)
@@ -33,7 +33,7 @@ class Api::V1::WebhooksController < ApplicationController
           list.name = _json.action.data.list.name
         end
         list.save
-        ActionCable.server.broadcast("update", {action: "update",type: "lists", list: list })
+        ActionCable.server.broadcast("update", {action: "update",type: "lists", lists: list })
       end
     when "deleteList"
       List.find_by_id(_json.action.data.list.id).try(:destroy)
@@ -47,7 +47,7 @@ class Api::V1::WebhooksController < ApplicationController
           name: _json.action.data.card.name
         )
         card.save
-        ActionCable.server.broadcast("update", {action: "create",type: "cards", card: card })
+        ActionCable.server.broadcast("update", {action: "create",type: "cards", cards: card })
       end
     when "updateCard"
       if Card.exists?(_json.action.data.card.id)
@@ -62,7 +62,7 @@ class Api::V1::WebhooksController < ApplicationController
           card.desc = _json.action.data.card.desc
         end
         card.save
-        ActionCable.server.broadcast("update", {action: "update",type: "cards", card: card })
+        ActionCable.server.broadcast("update", {action: "update",type: "cards", cards: card })
       end
     when "deleteCard"
       Card.find_by_id(_json.action.data.card.id).try(:destroy)

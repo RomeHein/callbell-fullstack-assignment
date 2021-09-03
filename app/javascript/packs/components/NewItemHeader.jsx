@@ -45,15 +45,19 @@ class NewItemHeader extends React.Component {
             { newTitle: value }
         ))
     };
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.title !== this.props.title) {
-            this.setState(() => (
-                { 
-                    isLoading: false, 
-                    isClosing: false,
-                    isEditing: false
-                }
-            ))
+    reset = () => {
+        this.setState(() => (
+            { 
+                isLoading: false, 
+                isClosing: false,
+                isEditing: false,
+                newTitle: this.props.title
+            }
+        ))
+    }
+    shouldComponentUpdate(nextProps) {
+        if (nextProps.title !== this.props.title || (this.state.newTitle && !this.props.title && this.state.isLoading)) {
+            this.reset()
         }
         return true
     }
@@ -64,7 +68,7 @@ class NewItemHeader extends React.Component {
                 <Col flex="auto">
                     <Input
                         placeholder={placeholder}
-                        defaultValue={this.props.title} 
+                        value={this.state.newTitle} 
                         onChange={(e) => { this.onChange(e.target.value) }}
                         onPressEnter={this.changeItem} 
                         disabled={this.props.title && !this.state.isEditing}

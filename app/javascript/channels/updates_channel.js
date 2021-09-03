@@ -10,6 +10,7 @@ const UpdatesChannel = consumer.subscriptions.create('UpdateChannel', {
   },
 
   received(data) {
+    console.log(data)
   },
 })
 

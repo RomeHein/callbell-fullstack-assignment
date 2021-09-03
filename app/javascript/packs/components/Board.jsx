@@ -9,7 +9,7 @@ class Board extends React.Component {
     lists: [],
     cards: []
   };
-  editItem = async (type, {id, idList, name, desc}) => {
+  editItem = async (type, { id, idList, name, desc }) => {
     let url = `api/v1/${type}`;
     if (id) {
       url += '/' + id
@@ -20,7 +20,7 @@ class Board extends React.Component {
         desc,
         idList
       })
-      const data = await fetch(url, {
+      await fetch(url, {
         method: id ? 'PUT' : 'POST',
         headers: {
           'Accept': 'application/json',
@@ -28,47 +28,20 @@ class Board extends React.Component {
         },
         body
       })
-      if (data.ok) {
-        const json = await data.json()
-        if (json && id) {
-          const newItems = this.state[type].map(item => {
-            if (item.id === id) {
-              return json
-            }
-            return item
-          })
-          this.setState(() => ({
-            [type]: newItems,
-          }));
-        } else {
-          this.setState((prevState) => ({
-            [type]: [...prevState[type], json],
-          }))
-        }
-      }
     } catch (e) {
       throw new Error(`Network error: ${e}`);
     }
-  }
+  };
   closeItem = async (type, id) => {
     const url = `api/v1/${type}/${id}`;
     try {
-      const data = await fetch(url, {
+      await fetch(url, {
         method: "delete",
       })
-      if (data.ok) {
-        const json = data.json();
-        if (json) {
-          const newItems = this.state[type].filter(item => item.id !== id)
-          this.setState(() => ({
-            [type]: newItems,
-          }));
-        }
-      }
     } catch (e) {
       throw new Error("Network error.");
     }
-  }
+  };
   loadData = async (type) => {
     const url = `api/v1/${type}`;
     try {
@@ -91,21 +64,48 @@ class Board extends React.Component {
     let openedList = this.state.lists.filter(list => !list.closed)
     openedList.push({})
     return openedList
-  }
+  };
   cardsForList(id) {
     let filtered = this.state.cards.filter(card => card && card.idList === id)
     filtered.push({})
     return filtered
-  }
+  };
+  updateItem(action, type, item) {
+    let newItems
+    switch (action) {
+      case 'create':
+        this.setState((prevState) => ({
+          [type]: [...prevState[type], item],
+        }))
+        break
+      case 'update':
+        newItems = this.state[type].map(i => {
+          if (i.id === item.id) {
+            return item
+          }
+          return i
+        })
+        this.setState(() => ({
+          [type]: newItems,
+        }));
+        break
+      case 'delete':
+        newItems = this.state[type].filter(i => i.id !== item)
+        this.setState(() => ({
+          [type]: newItems,
+        }));
+        break
+    }
+  };
   componentDidMount() {
     ['lists', 'cards'].forEach(type => {
       this.loadData(type);
     })
     // Websocket handler
     UpdatesChannel.received = (data) => {
-      this.reloadData(data.type)
+      this.updateItem(data.action, data.type, data[data.type] || data.id)
     }
-  }
+  };
   render() {
     return (
       <Layout className="layout" style={{ height: "100vh" }}>
@@ -115,17 +115,16 @@ class Board extends React.Component {
             {
               this.openedList().map(list => {
                 return <TrelloList
-                  key={list.id || "new"}
+                  key={list.id || "new"}
                   name={list.name}
                   cards={this.cardsForList(list.id)}
-                  onChangeTitle={(name) => { this.editItem("lists", {id: list.id, name}) }}
-                  onCloseList={() => {this.closeItem("lists",list.id)}} 
-                  onChangeCardTitle={(id,name) => {this.editItem("cards", {id, name, idList: list.id})}}
-                  onChangeCardDesc={(id,desc) => {this.editItem("cards", {id, desc, idList: list.id})}}
-                  onCloseCard={(id) => {this.closeItem("cards",id)}}/>
+                  onChangeTitle={(name) => { this.editItem("lists", { id: list.id, name }) }}
+                  onCloseList={() => { this.closeItem("lists", list.id) }}
+                  onChangeCardTitle={(id, name) => { this.editItem("cards", { id, name, idList: list.id }) }}
+                  onChangeCardDesc={(id, desc) => { this.editItem("cards", { id, desc, idList: list.id }) }}
+                  onCloseCard={(id) => { this.closeItem("cards", id) }} />
               })
             }
-            {/* <TrelloList onChangeTitle={(name) => { this.editItem("lists", {name}) }} /> */}
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>Trello Clone for CallBell ©2021.</Footer>

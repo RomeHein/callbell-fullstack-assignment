@@ -39,7 +39,8 @@ class CardDescription extends React.Component {
             this.setState(() => (
                 {
                     isLoading: false,
-                    isEditing: false
+                    isEditing: false,
+                    newDesc: this.props.desc
                 }
             ))
         }
@@ -52,7 +53,7 @@ class CardDescription extends React.Component {
                     <Input.TextArea
                         autoSize={{ minRows: 2 }}
                         placeholder="Card description"
-                        defaultValue={this.props.desc}
+                        value={this.state.newDesc}
                         onChange={(e) => { this.onChange(e.target.value) }}
                         disabled={!this.state.isEditing}
                     />
