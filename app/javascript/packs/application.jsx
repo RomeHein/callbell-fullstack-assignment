@@ -5,8 +5,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "antd/dist/antd.css";
-
 import Board from './components/Board';
+import '../channels'
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(<Board />, document.body.appendChild(document.createElement('div')));

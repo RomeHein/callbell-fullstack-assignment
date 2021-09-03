@@ -1,7 +1,8 @@
 import React from 'react';
+import UpdatesChannel from '../../channels/updates_channel'
 import TrelloList from "./TrelloList";
 import "../../stylesheets/board.css"
-import { Layout, Row, Col } from 'antd';
+import { Layout } from 'antd';
 const { Content, Footer } = Layout;
 class Board extends React.Component {
   state = {
@@ -100,6 +101,10 @@ class Board extends React.Component {
     ['lists', 'cards'].forEach(type => {
       this.loadData(type);
     })
+    // Websocket handler
+    UpdatesChannel.received = (data) => {
+      this.reloadData(data.type)
+    }
   }
   render() {
     return (
@@ -110,7 +115,7 @@ class Board extends React.Component {
             {
               this.openedList().map(list => {
                 return <TrelloList
-                  key={list.id}
+                  key={list.id || "new"}
                   name={list.name}
                   cards={this.cardsForList(list.id)}
                   onChangeTitle={(name) => { this.editItem("lists", {id: list.id, name}) }}
